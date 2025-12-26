@@ -1,0 +1,5 @@
+
+body { background:#0f0f0f; color:#fff; font-family:Arial; text-align:center; }
+.squeeze-container { max-width:420px; margin:auto; padding:3rem; }
+input,button { width:100%; padding:12px; margin-top:10px; }
+button { background:#f5c518; border:none; font-weight:bold; }
