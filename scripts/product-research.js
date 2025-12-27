@@ -14,7 +14,12 @@ const sampleProducts = [
     sales: 5200,
     rating: 4.7,
     reviews: 4500,
-    orders: 12000
+    orders: 12000,
+    description: "Transform your yoga practice with our premium non-slip yoga mat featuring innovative alignment lines. Perfect for beginners and advanced practitioners alike, this eco-friendly mat provides superior grip and cushioning for all your poses.",
+    features: ["Non-slip textured surface", "6mm thick cushioning", "Alignment guide lines", "Eco-friendly TPE material", "Lightweight & portable", "Easy to clean"],
+    sizes: ["Standard (68\" x 24\")", "Extra Long (72\" x 26\")", "Extra Wide (72\" x 30\")"],
+    colors: ["Purple", "Blue", "Green", "Pink", "Black"],
+    targetAudience: "Yoga enthusiasts, fitness lovers, home workout practitioners"
   },
   {
     id: 2,
@@ -28,7 +33,12 @@ const sampleProducts = [
     sales: 6800,
     rating: 4.8,
     reviews: 5200,
-    orders: 15000
+    orders: 15000,
+    description: "Experience professional-grade skincare at home with our advanced LED light therapy face mask. Featuring 7 different light wavelengths, this FDA-cleared device reduces wrinkles, fights acne, and promotes collagen production for radiant, youthful skin.",
+    features: ["7 LED light colors", "FDA cleared technology", "Reduces fine lines & wrinkles", "Fights acne & inflammation", "Promotes collagen production", "Wireless & rechargeable"],
+    sizes: ["One Size (Adjustable)"],
+    colors: ["White"],
+    targetAudience: "Skincare enthusiasts, anti-aging seekers, beauty conscious individuals"
   },
   {
     id: 3,
@@ -42,7 +52,12 @@ const sampleProducts = [
     sales: 8500,
     rating: 4.6,
     reviews: 6100,
-    orders: 18000
+    orders: 18000,
+    description: "Blend your favorite smoothies anywhere with our powerful USB rechargeable portable blender. Perfect for busy professionals, gym-goers, and travelers who want fresh, healthy drinks on the go. Powerful 6-blade system blends ice, frozen fruit, and more in seconds.",
+    features: ["USB rechargeable battery", "6 stainless steel blades", "BPA-free Tritan material", "One-touch blending", "20oz capacity", "Easy to clean"],
+    sizes: ["14oz", "20oz", "24oz"],
+    colors: ["Pink", "Blue", "Black", "White", "Green"],
+    targetAudience: "Fitness enthusiasts, busy professionals, travelers, health-conscious individuals"
   },
   {
     id: 4,
@@ -56,7 +71,12 @@ const sampleProducts = [
     sales: 4200,
     rating: 4.7,
     reviews: 4800,
-    orders: 11000
+    orders: 11000,
+    description: "Never worry about your pet's meals again with our WiFi-enabled smart pet feeder. Built-in HD camera lets you see, talk to, and feed your pet from anywhere using your smartphone. Customizable portion control and feeding schedules keep your pet healthy and happy.",
+    features: ["HD camera with night vision", "Two-way audio communication", "Customizable feeding schedule", "Portion control (1-12 portions)", "WiFi app control", "6L large capacity"],
+    sizes: ["4L Capacity", "6L Capacity", "8L Capacity"],
+    colors: ["White", "Black"],
+    targetAudience: "Pet owners, busy professionals, travelers, tech-savvy pet parents"
   },
   {
     id: 5,
@@ -70,7 +90,12 @@ const sampleProducts = [
     sales: 7200,
     rating: 4.8,
     reviews: 5800,
-    orders: 16000
+    orders: 16000,
+    description: "Build strength and tone your body anywhere with our premium 5-level resistance bands set. Made from natural latex, these durable bands are perfect for home workouts, physical therapy, and strength training. Includes door anchor, handles, and ankle straps for unlimited exercise options.",
+    features: ["5 resistance levels (10-50 lbs)", "Natural latex material", "Door anchor included", "Comfortable foam handles", "Ankle straps included", "Portable carry bag"],
+    sizes: ["Standard Set (5 bands)", "Pro Set (5 bands + accessories)", "Ultimate Set (7 bands + accessories)"],
+    colors: ["Multi-color (color-coded by resistance)"],
+    targetAudience: "Fitness enthusiasts, home workout practitioners, physical therapy patients"
   },
   {
     id: 6,
@@ -84,7 +109,12 @@ const sampleProducts = [
     sales: 6500,
     rating: 4.5,
     reviews: 5500,
-    orders: 14000
+    orders: 14000,
+    description: "Charge your phone effortlessly with our sleek wireless charging stand. Fast 15W charging for compatible devices, with adjustable viewing angles perfect for video calls, watching content, or monitoring notifications. Case-friendly design works through most phone cases up to 5mm thick.",
+    features: ["15W fast wireless charging", "Adjustable viewing angle", "Case-friendly (up to 5mm)", "LED charging indicator", "Over-charge protection", "Non-slip base"],
+    sizes: ["Standard", "Dual Device"],
+    colors: ["Black", "White", "Silver"],
+    targetAudience: "Smartphone users, office workers, tech enthusiasts, minimalists"
   },
   {
     id: 7,
@@ -98,7 +128,12 @@ const sampleProducts = [
     sales: 5800,
     rating: 4.6,
     reviews: 4200,
-    orders: 13000
+    orders: 13000,
+    description: "Say goodbye to single-use plastic with our eco-friendly reusable silicone food storage bags. Made from food-grade platinum silicone, these leak-proof bags are perfect for storing snacks, fruits, sandwiches, and more. Microwave, freezer, and dishwasher safe for ultimate convenience.",
+    features: ["100% food-grade silicone", "Leak-proof seal", "Microwave & freezer safe", "Dishwasher safe", "BPA & PVC free", "Eco-friendly & reusable"],
+    sizes: ["Small (2 cups)", "Medium (4 cups)", "Large (6 cups)", "Mixed Set (6 bags)"],
+    colors: ["Clear", "Blue", "Green", "Multi-color Set"],
+    targetAudience: "Eco-conscious consumers, parents, meal preppers, zero-waste advocates"
   },
   {
     id: 8,
@@ -112,7 +147,12 @@ const sampleProducts = [
     sales: 6200,
     rating: 4.7,
     reviews: 5100,
-    orders: 14500
+    orders: 14500,
+    description: "Improve your posture and reduce back pain with our comfortable, adjustable posture corrector. Designed by chiropractors, this lightweight brace gently pulls your shoulders back to train your muscles for proper alignment. Wear under or over clothing for all-day comfort and support.",
+    features: ["Adjustable shoulder straps", "Breathable mesh material", "Lightweight & comfortable", "Suitable for men & women", "Improves posture naturally", "Reduces back & neck pain"],
+    sizes: ["Small (28-34\")", "Medium (35-41\")", "Large (42-48\")", "X-Large (49-55\")"],
+    colors: ["Black", "Beige", "Gray"],
+    targetAudience: "Office workers, gamers, people with back pain, posture-conscious individuals"
   }
 ];
 
