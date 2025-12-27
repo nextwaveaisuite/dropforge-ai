@@ -4,75 +4,115 @@
 const sampleProducts = [
   {
     id: 1,
-    name: "Premium Martial Arts Training Shoes",
+    name: "Premium Yoga Mat with Alignment Lines",
     category: "sports",
-    price: 45,
-    cost: 18,
-    demand: 85,
-    competition: "medium",
-    trend: "rising",
-    sales: 1250,
-    rating: 4.7
-  },
-  {
-    id: 2,
-    name: "Lightweight Karate Gi Uniform",
-    category: "sports",
-    price: 65,
-    cost: 25,
-    demand: 78,
-    competition: "low",
-    trend: "stable",
-    sales: 890,
-    rating: 4.8
-  },
-  {
-    id: 3,
-    name: "Professional Boxing Hand Wraps",
-    category: "sports",
-    price: 15,
-    cost: 5,
-    demand: 92,
-    competition: "high",
-    trend: "rising",
-    sales: 2100,
-    rating: 4.6
-  },
-  {
-    id: 4,
-    name: "Taekwondo Sparring Gear Set",
-    category: "sports",
-    price: 120,
-    cost: 45,
-    demand: 70,
-    competition: "medium",
-    trend: "stable",
-    sales: 650,
-    rating: 4.5
-  },
-  {
-    id: 5,
-    name: "MMA Training Gloves",
-    category: "sports",
-    price: 55,
-    cost: 22,
+    price: 35,
+    cost: 12,
     demand: 88,
     competition: "medium",
     trend: "rising",
-    sales: 1450,
-    rating: 4.7
+    sales: 5200,
+    rating: 4.7,
+    reviews: 4500,
+    orders: 12000
+  },
+  {
+    id: 2,
+    name: "LED Light Therapy Face Mask",
+    category: "beauty",
+    price: 89,
+    cost: 32,
+    demand: 92,
+    competition: "low",
+    trend: "rising",
+    sales: 6800,
+    rating: 4.8,
+    reviews: 5200,
+    orders: 15000
+  },
+  {
+    id: 3,
+    name: "Portable Blender for Smoothies",
+    category: "home",
+    price: 28,
+    cost: 10,
+    demand: 95,
+    competition: "medium",
+    trend: "rising",
+    sales: 8500,
+    rating: 4.6,
+    reviews: 6100,
+    orders: 18000
+  },
+  {
+    id: 4,
+    name: "Smart Pet Feeder with Camera",
+    category: "pets",
+    price: 75,
+    cost: 28,
+    demand: 85,
+    competition: "low",
+    trend: "stable",
+    sales: 4200,
+    rating: 4.7,
+    reviews: 4800,
+    orders: 11000
+  },
+  {
+    id: 5,
+    name: "Resistance Bands Set (5 Levels)",
+    category: "sports",
+    price: 22,
+    cost: 7,
+    demand: 90,
+    competition: "medium",
+    trend: "rising",
+    sales: 7200,
+    rating: 4.8,
+    reviews: 5800,
+    orders: 16000
   },
   {
     id: 6,
-    name: "Judo Belt Collection",
-    category: "sports",
-    price: 12,
-    cost: 4,
-    demand: 65,
-    competition: "low",
+    name: "Wireless Phone Charger Stand",
+    category: "electronics",
+    price: 19,
+    cost: 6,
+    demand: 87,
+    competition: "medium",
     trend: "stable",
-    sales: 780,
-    rating: 4.4
+    sales: 6500,
+    rating: 4.5,
+    reviews: 5500,
+    orders: 14000
+  },
+  {
+    id: 7,
+    name: "Reusable Silicone Food Storage Bags",
+    category: "home",
+    price: 16,
+    cost: 5,
+    demand: 82,
+    competition: "low",
+    trend: "rising",
+    sales: 5800,
+    rating: 4.6,
+    reviews: 4200,
+    orders: 13000
+  },
+  {
+    id: 8,
+    name: "Posture Corrector Back Brace",
+    category: "health",
+    price: 24,
+    cost: 8,
+    demand: 89,
+    competition: "medium",
+    trend: "rising",
+    sales: 6200,
+    rating: 4.7,
+    reviews: 5100,
+    orders: 14500
   }
 ];
 
@@ -249,14 +289,13 @@ function addToStore(productId) {
   const product = sampleProducts.find(p => p.id === productId);
   
   // Save to localStorage
-  let selectedProducts = JSON.parse(localStorage.getItem('selectedProducts') || '[]');
-  if (!selectedProducts.find(p => p.id === productId)) {
-    selectedProducts.push(product);
-    localStorage.setItem('selectedProducts', JSON.stringify(selectedProducts));
-    alert(`✅ "${product.name}" added to your store!`);
-  } else {
-    alert('This product is already in your store.');
-  }
+  localStorage.setItem('selectedProduct', JSON.stringify(product));
+  
+  // Show success message
+  alert(`✅ "${product.name}" selected!\n\nRedirecting to Store Builder to create your store...`);
+  
+  // Redirect to Store Builder
+  window.location.href = './store-builder-advanced.html';
 }
 
 // View product details
