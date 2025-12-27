@@ -1,3 +1,4 @@
+store-builder-UPDATED.js
 // Advanced Store Builder with DropForge AI Integration
 // In production, this connects to OpenAI API and Shopify API
 
@@ -13,6 +14,173 @@ let storeConfig = {
 };
 
 let currentPreview = 'desktop';
+let selectedProduct = null;
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if product was selected from Product Research
+  const productData = localStorage.getItem('selectedProduct');
+  if (productData) {
+    selectedProduct = JSON.parse(productData);
+    autoPopulateFromProduct(selectedProduct);
+  }
+});
+
+// Auto-populate store builder with selected product
+function autoPopulateFromProduct(product) {
+  // Set store type to one-product
+  document.getElementById('storeType').value = 'one-product';
+  updatePricing();
+  
+  // Generate store name from product
+  const storeName = generateStoreName(product.name);
+  document.getElementById('storeName').value = storeName;
+  storeConfig.name = storeName;
+  
+  // Set niche from product category
+  const niche = product.category.charAt(0).toUpperCase() + product.category.slice(1);
+  document.getElementById('storeNiche').value = niche;
+  storeConfig.niche = niche;
+  
+  // Add product to config
+  storeConfig.products = [product];
+  
+  // Show success message with full product details
+  const profitMargin = Math.round((product.price - product.cost) / product.price * 100);
+  const messageDiv = document.createElement('div');
+  messageDiv.style.cssText = 'background:#10b981; color:white; padding:20px; border-radius:12px; margin-bottom:20px;';
+  messageDiv.innerHTML = `
+    <div style="text-align:center; margin-bottom:15px;">
+      <strong style="font-size:18px;">✅ Product Loaded Successfully!</strong>
+    </div>
+    <div style="background:rgba(255,255,255,0.2); padding:15px; border-radius:8px;">
+      <div style="font-size:16px; margin-bottom:10px;"><strong>${product.name}</strong></div>
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; font-size:14px;">
+        <div>💰 Price: $${product.price}</div>
+        <div>📊 Profit: ${profitMargin}%</div>
+        <div>⭐ Rating: ${product.rating}</div>
+      </div>
+    </div>
+    <div style="margin-top:15px; font-size:14px; text-align:center;">
+      All product details have been auto-filled below. Review and edit if needed, then click "Generate Store"!
+    </div>
+  `;
+  
+  const container = document.querySelector('.builder-container');
+  container.insertBefore(messageDiv, container.firstChild);
+  
+  // Create product details section
+  createProductDetailsSection(product);
+  
+  // Update preview
+  updatePreview();
+}
+
+// Create editable product details section
+function createProductDetailsSection(product) {
+  const existingSection = document.getElementById('productDetailsSection');
+  if (existingSection) {
+    existingSection.remove();
+  }
+  
+  const profitMargin = Math.round((product.price - product.cost) / product.price * 100);
+  
+  const detailsSection = document.createElement('div');
+  detailsSection.id = 'productDetailsSection';
+  detailsSection.style.cssText = 'background:white; padding:30px; border-radius:16px; margin:20px 0; box-shadow:0 5px 20px rgba(0,0,0,0.1);';
+  detailsSection.innerHTML = `
+    <h3 style="margin-bottom:20px; color:#2D3142; font-size:22px;">📦 Product Details (Editable)</h3>
+    
+    <div style="margin-bottom:20px;">
+      <label style="display:block; margin-bottom:8px; font-weight:600; color:#666;">Product Name</label>
+      <input type="text" id="productName" value="${product.name}" 
+             style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:16px;">
+    </div>
+    
+    <div style="margin-bottom:20px;">
+      <label style="display:block; margin-bottom:8px; font-weight:600; color:#666;">Product Description</label>
+      <textarea id="productDescription" rows="4" 
+                style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px; line-height:1.6;">${product.description}</textarea>
+    </div>
+    
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:15px; margin-bottom:20px;">
+      <div>
+        <label style="display:block; margin-bottom:8px; font-weight:600; color:#666;">Retail Price</label>
+        <input type="number" id="productPrice" value="${product.price}" 
+               style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:16px;">
+      </div>
+      <div>
+        <label style="display:block; margin-bottom:8px; font-weight:600; color:#666;">Cost</label>
+        <input type="number" id="productCost" value="${product.cost}" 
+               style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:16px;" readonly>
+      </div>
+      <div>
+        <label style="display:block; margin-bottom:8px; font-weight:600; color:#666;">Profit Margin</label>
+        <input type="text" value="${profitMargin}%" 
+               style="width:100%; padding:12px; border:2px solid #10b981; border-radius:8px; font-size:16px; background:#f0fdf4; font-weight:600; color:#10b981;" readonly>
+      </div>
+    </div>
+    
+    <div style="margin-bottom:20px;">
+      <label style="display:block; margin-bottom:8px; font-weight:600; color:#666;">Key Features</label>
+      <div id="featuresList" style="background:#f8f9fa; padding:15px; border-radius:8px;">
+        ${product.features.map((feature, index) => `
+          <div style="display:flex; align-items:center; margin-bottom:8px;">
+            <span style="color:#10b981; margin-right:8px;">✓</span>
+            <input type="text" value="${feature}" 
+                   style="flex:1; padding:8px; border:1px solid #e0e0e0; border-radius:6px; font-size:14px;">
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+      <div>
+        <label style="display:block; margin-bottom:8px; font-weight:600; color:#666;">Available Sizes</label>
+        <div style="background:#f8f9fa; padding:12px; border-radius:8px; min-height:80px;">
+          ${product.sizes.map(size => `
+            <span style="display:inline-block; padding:6px 12px; background:white; border:1px solid #e0e0e0; border-radius:6px; margin:4px; font-size:13px;">${size}</span>
+          `).join('')}
+        </div>
+      </div>
+      <div>
+        <label style="display:block; margin-bottom:8px; font-weight:600; color:#666;">Available Colors</label>
+        <div style="background:#f8f9fa; padding:12px; border-radius:8px; min-height:80px;">
+          ${product.colors.map(color => `
+            <span style="display:inline-block; padding:6px 12px; background:white; border:1px solid #e0e0e0; border-radius:6px; margin:4px; font-size:13px;">${color}</span>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+    
+    <div style="margin-bottom:20px;">
+      <label style="display:block; margin-bottom:8px; font-weight:600; color:#666;">Target Audience</label>
+      <input type="text" id="productAudience" value="${product.targetAudience}" 
+             style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px;">
+    </div>
+    
+    <div style="background:#eff6ff; padding:15px; border-radius:8px; border-left:4px solid #3b82f6;">
+      <div style="font-weight:600; color:#1e40af; margin-bottom:5px;">💡 Pro Tip</div>
+      <div style="font-size:14px; color:#1e40af;">All fields above are editable. Make any changes you want, then click "Generate Store" to build your dropshipping store with these details!</div>
+    </div>
+  `;
+  
+  // Insert after store configuration section
+  const configSection = document.querySelector('.config-section');
+  if (configSection && configSection.parentNode) {
+    configSection.parentNode.insertBefore(detailsSection, configSection.nextSibling);
+  }
+}
+
+// Generate store name from product name
+function generateStoreName(productName) {
+  // Extract key words and create a brand name
+  const words = productName.split(' ');
+  const keyWord = words.find(w => w.length > 4) || words[0];
+  const suffixes = ['Hub', 'Store', 'Shop', 'Market', 'Pro', 'Zone'];
+  const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+  return keyWord + randomSuffix;
+}
 
 // Update pricing info based on store type
 function updatePricing() {
