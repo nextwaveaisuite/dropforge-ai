@@ -277,5 +277,53 @@ function sleep(ms) {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
+  // Check if product was selected
+  const selectedProduct = localStorage.getItem('selectedProduct');
+  if (selectedProduct) {
+    const product = JSON.parse(selectedProduct);
+    showProductInfo(product);
+  }
+  
   loadSuppliers();
 });
+
+// Show product info banner
+function showProductInfo(product) {
+  const profitMargin = Math.round((product.price - product.cost) / product.price * 100);
+  
+  const banner = document.createElement('div');
+  banner.style.cssText = 'background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; padding:25px; border-radius:16px; margin-bottom:25px; box-shadow:0 10px 30px rgba(102,126,234,0.3);';
+  banner.innerHTML = `
+    <div style="text-align:center; margin-bottom:15px;">
+      <strong style="font-size:20px;">🎯 Finding Suppliers for Your Product</strong>
+    </div>
+    <div style="background:rgba(255,255,255,0.15); padding:20px; border-radius:12px; backdrop-filter:blur(10px);">
+      <div style="font-size:18px; margin-bottom:12px; font-weight:600;">${product.name}</div>
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:15px; font-size:14px;">
+        <div>
+          <div style="opacity:0.9; margin-bottom:4px;">💰 Retail Price</div>
+          <div style="font-size:20px; font-weight:700;">$${product.price}</div>
+        </div>
+        <div>
+          <div style="opacity:0.9; margin-bottom:4px;">📊 Profit Margin</div>
+          <div style="font-size:20px; font-weight:700;">${profitMargin}%</div>
+        </div>
+        <div>
+          <div style="opacity:0.9; margin-bottom:4px;">⭐ Rating</div>
+          <div style="font-size:20px; font-weight:700;">${product.rating}</div>
+        </div>
+        <div>
+          <div style="opacity:0.9; margin-bottom:4px;">📦 Monthly Sales</div>
+          <div style="font-size:20px; font-weight:700;">${product.sales}</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:15px; text-align:center; font-size:14px; opacity:0.95;">
+      💡 We recommend connecting to <strong>AliExpress</strong>, <strong>CJ Dropshipping</strong>, and <strong>Spocket</strong> for this product
+    </div>
+  `;
+  
+  const container = document.querySelector('.supplier-container') || document.body;
+  const firstChild = container.firstChild;
+  container.insertBefore(banner, firstChild);
+}
