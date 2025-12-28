@@ -11,9 +11,9 @@ const APP_KEY = getEnv("ALIEXPRESS_APP_KEY");
 const APP_SECRET = getEnv("ALIEXPRESS_APP_SECRET");
 const REDIRECT_URI = getEnv("ALIEXPRESS_REDIRECT_URI");
 
-// *** THIS IS THE FIX: Using the SANDBOX URL for the TEST App ***
-const AUTH_URL = "https://oauth.aliexpress.com/authorize"; // The auth URL is often the same, but the token URL is different.
-const TOKEN_URL = "https://api-sg.aliexpress.com/rest"; // This is a common alternative endpoint structure.
+// *** THE FIX: Using the standard AliExpress API gateway ***
+const AUTH_URL = "https://oauth.aliexpress.com/authorize";
+const TOKEN_URL = "https://api.aliexpress.com/rest"; // Standard REST Gateway
 
 function getAuthorizationUrl( ) {
   const params = new URLSearchParams({
@@ -35,15 +35,17 @@ function getAccessToken(code) {
       client_secret: APP_SECRET,
       code: code,
       redirect_uri: REDIRECT_URI,
-      method: 'aliexpress.system.oauth.token.create' // Using the REST endpoint method
+      method: 'aliexpress.system.oauth.token.create'
     }).toString();
 
     const options = {
+      hostname: 'api.aliexpress.com',
+      path: '/rest',
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     };
 
-    const req = https.request(TOKEN_URL, options, (res ) => {
+    const req = https.request(options, (res ) => {
       let data = "";
       res.on("data", (chunk) => { data += chunk; });
       res.on("end", () => {
@@ -52,9 +54,8 @@ function getAccessToken(code) {
           if (tokenData.error_response) {
             return reject(new Error(tokenData.error_response.msg));
           }
-          // The actual token is nested differently with this endpoint
-          const tokenResult = tokenData.aliexpress_system_oauth_token_create_response.result;
-          resolve(tokenResult);
+          const result = tokenData.aliexpress_system_oauth_token_create_response.result;
+          resolve(result);
         } catch (e) {
           reject(new Error(`Failed to parse token response: ${data}`));
         }
