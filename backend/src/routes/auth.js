@@ -1,17 +1,32 @@
 const express = require("express");
 const router = express.Router();
+const { getAuthorizationUrl, getAccessToken } = require("../services/authService");
 
-// HARDCODED DEBUG: This removes all variables and tests the key directly.
+// Redirect user to AliExpress for authorization
 router.get("/aliexpress", (req, res) => {
-  const appKey = "524060";
-  const redirectUri = "https://dropforge-ai-backend.vercel.app/api/auth/aliexpress/callback";
-  const authUrl = `https://oauth.aliexpress.com/authorize?response_type=code&client_id=${appKey}&redirect_uri=${redirectUri}&state=debug&view=web&sp=ae`;
-  res.redirect(authUrl );
+  try {
+    const authUrl = getAuthorizationUrl();
+    res.redirect(authUrl);
+  } catch (error) {
+    res.status(500).send(`<h1>Error</h1><p>${error.message}</p>`);
+  }
 });
 
-// This part will not be used in this test.
+// Handle the callback from AliExpress
 router.get("/aliexpress/callback", async (req, res) => {
-  res.send("Callback received.");
+  const { code } = req.query;
+  if (!code) {
+    return res.status(400).send("Authorization code is missing.");
+  }
+
+  try {
+    const tokenData = await getAccessToken(code);
+    // In a real app, you would securely encrypt and store this token data
+    // For now, we will just confirm success.
+    res.send("<h1>✅ Authentication Successful!</h1><p>You can now close this window. Your application is connected to AliExpress.</p>");
+  } catch (error) {
+    res.status(500).send(`<h1>❌ Authentication Failed</h1><p>${error.message}</p>`);
+  }
 });
 
 module.exports = router;
