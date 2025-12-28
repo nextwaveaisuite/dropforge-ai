@@ -11,13 +11,5 @@
       "src": "/(.*)",
       "dest": "src/index.js"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "SUPABASE_URL": "@supabase_url",
-    "SUPABASE_KEY": "@supabase_key",
-    "ALIEXPRESS_APP_KEY": "@aliexpress_app_key",
-    "ALIEXPRESS_APP_SECRET": "@aliexpress_app_secret",
-    "JWT_SECRET": "@jwt_secret"
-  }
+  ]
 }
