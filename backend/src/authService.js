@@ -1,27 +1,45 @@
 const https = require("https" );
 const { URLSearchParams } = require("url");
 
-const APP_KEY = process.env.ALIEXPRESS_APP_KEY;
-const APP_SECRET = process.env.ALIEXPRESS_APP_SECRET;
-const REDIRECT_URI = process.env.ALIEXPRESS_REDIRECT_URI;
+// This function checks for missing keys and will not crash the server.
+function getEnv(key) {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`FATAL ERROR: Environment variable ${key} is missing. Please check your Vercel project settings.`);
+  }
+  return value;
+}
+
+let APP_KEY, APP_SECRET, REDIRECT_URI;
+try {
+  APP_KEY = getEnv("ALIEXPRESS_APP_KEY");
+  APP_SECRET = getEnv("ALIEXPRESS_APP_SECRET");
+  REDIRECT_URI = getEnv("ALIEXPRESS_REDIRECT_URI");
+} catch (error) {
+  console.error(error.message);
+  // We will let the server start, but the auth routes will fail with a clear error.
+}
 
 const AUTH_URL = "https://oauth.aliexpress.com/authorize";
 const TOKEN_URL = "https://oauth.aliexpress.com/token";
 
 function getAuthorizationUrl( ) {
+  if (!APP_KEY) throw new Error("AliExpress App Key is not configured.");
   const params = new URLSearchParams({
     response_type: "code",
     client_id: APP_KEY,
     redirect_uri: REDIRECT_URI,
-    state: "dropforge_xyz", // In a real app, this should be a random, secure string
+    state: "dropforge_xyz",
     view: "web",
-    sp: "ae", // AliExpress specific parameter
+    sp: "ae",
   });
   return `${AUTH_URL}?${params.toString()}`;
 }
 
 function getAccessToken(code) {
   return new Promise((resolve, reject) => {
+    if (!APP_KEY) return reject(new Error("AliExpress App Key is not configured."));
+
     const postData = new URLSearchParams({
       grant_type: "authorization_code",
       client_id: APP_KEY,
@@ -32,10 +50,7 @@ function getAccessToken(code) {
 
     const options = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Content-Length": Buffer.byteLength(postData),
-      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
     };
 
     const req = https.request(TOKEN_URL, options, (res ) => {
@@ -54,10 +69,7 @@ function getAccessToken(code) {
       });
     });
 
-    req.on("error", (e) => {
-      reject(e);
-    });
-
+    req.on("error", (e) => reject(e));
     req.write(postData);
     req.end();
   });
