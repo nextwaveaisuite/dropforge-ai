@@ -1,139 +1,91 @@
-// ===================================================
-// AliExpress API Service
-// Handles all AliExpress API interactions
-// ===================================================
-
 const crypto = require("crypto");
 const https = require("https" );
-const NodeCache = require("node-cache");
 
 class AliExpressService {
   constructor() {
     this.appKey = process.env.ALIEXPRESS_APP_KEY;
     this.appSecret = process.env.ALIEXPRESS_APP_SECRET;
     this.baseUrl = process.env.ALIEXPRESS_API_URL;
-    this.cache = new NodeCache({ stdTTL: 3600 }); // 1 hour cache
   }
 
-  // ===================================================
-  // Generate Signature for AliExpress API (CORRECTED)
-  // ===================================================
+  // Generate the correct signature using the official method
   generateSignature(params) {
     const sortedKeys = Object.keys(params).sort();
     let stringToSign = "";
     for (const key of sortedKeys) {
       stringToSign += key + params[key];
     }
-
-    // The signature is a hash of the App Secret + the concatenated parameters
-    const hmac = crypto.createHmac("sha256", this.appSecret);
-    hmac.update(stringToSign);
-    const signature = hmac.digest("hex").toUpperCase();
-    return signature;
+    stringToSign = this.appSecret + stringToSign + this.appSecret;
+    return crypto.createHash('md5').update(stringToSign).digest('hex').toUpperCase();
   }
 
-  // ===================================================
-  // Make API Request
-  // ===================================================
-  makeRequest(method, params) {
+  makeRequest(method, apiParams) {
     return new Promise((resolve, reject) => {
-      try {
-        const requestParams = {
-          app_key: this.appKey,
-          sign_method: "sha256",
-          timestamp: new Date().getTime(),
-          method: method,
-          ...params,
-        };
+      const systemParams = {
+        app_key: this.appKey,
+        method: method,
+        sign_method: "md5",
+        timestamp: new Date().toISOString().slice(0, 19).replace('T', ' '),
+        format: 'json',
+        v: '2.0',
+        ...apiParams
+      };
 
-        const signature = this.generateSignature(requestParams);
-        requestParams.sign = signature;
+      systemParams.sign = this.generateSignature(systemParams);
 
-        const queryString = Object.keys(requestParams)
-          .map(
-            (key) =>
-              `${encodeURIComponent(key)}=${encodeURIComponent(requestParams[key])}`
-          )
-          .join("&");
+      const queryString = Object.keys(systemParams)
+        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(systemParams[key])}`)
+        .join('&');
 
-        const url = `${this.baseUrl}?${queryString}`;
+      const url = `${this.baseUrl}?${queryString}`;
 
-        console.log(`📡 AliExpress API Request: ${method}`);
-
-        https.get(url, (res ) => {
-            let data = "";
-            res.on("data", (chunk) => {
-              data += chunk;
-            });
-            res.on("end", () => {
-              try {
-                const response = JSON.parse(data);
-                // Check for the correct response structure
-                const resultKey = Object.keys(response)[0];
-                const result = response[resultKey].result;
-
-                if (result && result.resp_code === 200) {
-                  resolve(result);
-                } else {
-                  reject(
-                    new Error(result?.resp_msg || "AliExpress API Error")
-                  );
-                }
-              } catch (e) {
-                reject(new Error("Failed to parse AliExpress API response: " + data));
-              }
-            });
-          }).on("error", (err) => {
-            reject(err);
-          });
-      } catch (error) {
-        reject(error);
-      }
+      https.get(url, (res ) => {
+        let data = '';
+        res.on('data', (chunk) => { data += chunk; });
+        res.on('end', () => {
+          try {
+            const response = JSON.parse(data);
+            const errorResponse = response.error_response;
+            if (errorResponse) {
+              return reject(new Error(`AliExpress Error: ${errorResponse.msg} (Code: ${errorResponse.code})`));
+            }
+            const resultKey = Object.keys(response).find(k => k.includes('_response'));
+            const result = response[resultKey].result;
+            resolve(result);
+          } catch (e) {
+            reject(new Error(`Failed to parse API response: ${data}`));
+          }
+        });
+      }).on('error', (err) => {
+        reject(err);
+      });
     });
   }
 
-  // ===================================================
-  // Search Products
-  // ===================================================
   async searchProducts(keyword, page = 1, pageSize = 20) {
     try {
-      const cacheKey = `search_${keyword}_${page}`;
-      const cached = this.cache.get(cacheKey);
-      if (cached) {
-        console.log(`✅ Cache hit for: ${keyword}`);
-        return cached;
-      }
-
       const params = {
-        traffic_source_type: "ECOMMERCE",
-        query: keyword,
-        page_size: pageSize,
+        keywords: keyword,
         page_no: page,
+        page_size: pageSize,
+        sort: 'SALE_PRICE_ASC',
+        product_info_fields: 'product_id,product_title,product_main_image_url,target_sale_price,evaluate_rate,target_sale_volume'
       };
 
-      const result = await this.makeRequest(
-        "aliexpress.affiliate.product.query",
-        params
-      );
+      const result = await this.makeRequest('aliexpress.ds.product.get', params);
 
-      const products = result.products || [];
-      const formatted = {
-        total: result.total_record_count || 0,
-        page,
-        pageSize,
+      const products = result.products?.product || [];
+      return {
+        total: result.total_count || 0,
         products: products.map((p) => ({
           id: p.product_id,
           title: p.product_title,
           image: p.product_main_image_url,
-          price: parseFloat(p.target_sale_price.amount),
+          price: parseFloat(p.target_sale_price.value),
           sales: parseInt(p.target_sale_volume) || 0,
           rating: parseFloat(p.evaluate_rate) || 0,
-          reviews: 0, // API does not provide review count in this endpoint
         })),
       };
-
-      this.cache.set(cacheKey, formatted);
-      return formatted;
     } catch (error) {
       console.error("❌ Search Error:", error.message);
       throw error;
@@ -142,4 +94,3 @@ class AliExpressService {
 }
 
 module.exports = new AliExpressService();
-
