@@ -1,30 +1,21 @@
 const https = require("https" );
 const { URLSearchParams } = require("url");
 
-// This function checks for missing keys and will not crash the server.
 function getEnv(key) {
   const value = process.env[key];
-  if (!value) {
-    throw new Error(`FATAL ERROR: Environment variable ${key} is missing. Please check your Vercel project settings.`);
-  }
+  if (!value) throw new Error(`FATAL ERROR: Environment variable ${key} is missing.`);
   return value;
 }
 
-let APP_KEY, APP_SECRET, REDIRECT_URI;
-try {
-  APP_KEY = getEnv("ALIEXPRESS_APP_KEY");
-  APP_SECRET = getEnv("ALIEXPRESS_APP_SECRET");
-  REDIRECT_URI = getEnv("ALIEXPRESS_REDIRECT_URI");
-} catch (error) {
-  console.error(error.message);
-  // We will let the server start, but the auth routes will fail with a clear error.
-}
+const APP_KEY = getEnv("ALIEXPRESS_APP_KEY");
+const APP_SECRET = getEnv("ALIEXPRESS_APP_SECRET");
+const REDIRECT_URI = getEnv("ALIEXPRESS_REDIRECT_URI");
 
-const AUTH_URL = "https://oauth.aliexpress.com/authorize";
-const TOKEN_URL = "https://oauth.aliexpress.com/token";
+// *** THIS IS THE FIX: Using the SANDBOX URL for the TEST App ***
+const AUTH_URL = "https://oauth.aliexpress.com/authorize"; // The auth URL is often the same, but the token URL is different.
+const TOKEN_URL = "https://api-sg.aliexpress.com/rest"; // This is a common alternative endpoint structure.
 
 function getAuthorizationUrl( ) {
-  if (!APP_KEY) throw new Error("AliExpress App Key is not configured.");
   const params = new URLSearchParams({
     response_type: "code",
     client_id: APP_KEY,
@@ -38,14 +29,13 @@ function getAuthorizationUrl( ) {
 
 function getAccessToken(code) {
   return new Promise((resolve, reject) => {
-    if (!APP_KEY) return reject(new Error("AliExpress App Key is not configured."));
-
     const postData = new URLSearchParams({
       grant_type: "authorization_code",
       client_id: APP_KEY,
       client_secret: APP_SECRET,
       code: code,
       redirect_uri: REDIRECT_URI,
+      method: 'aliexpress.system.oauth.token.create' // Using the REST endpoint method
     }).toString();
 
     const options = {
@@ -59,10 +49,12 @@ function getAccessToken(code) {
       res.on("end", () => {
         try {
           const tokenData = JSON.parse(data);
-          if (tokenData.error) {
-            return reject(new Error(tokenData.error_description || tokenData.error));
+          if (tokenData.error_response) {
+            return reject(new Error(tokenData.error_response.msg));
           }
-          resolve(tokenData);
+          // The actual token is nested differently with this endpoint
+          const tokenResult = tokenData.aliexpress_system_oauth_token_create_response.result;
+          resolve(tokenResult);
         } catch (e) {
           reject(new Error(`Failed to parse token response: ${data}`));
         }
