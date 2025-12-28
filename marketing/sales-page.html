@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropForge AI - The Smartest Dropshipping Software</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            margin-left: 30px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #3b82f6;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 48px rgba(59, 130, 246, 0.5);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            margin: 80px 0;
+        }
+
+        .features h2 {
+            font-size: 44px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: rgba(51, 65, 85, 0.5);
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: #cbd5e1;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 80px 0;
+        }
+
+        .pricing h2 {
+            font-size: 44px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .pricing-card {
+            background: rgba(51, 65, 85, 0.5);
+            padding: 40px;
+            border-radius: 12px;
+            border: 2px solid rgba(71, 85, 105, 0.3);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .pricing-card.featured {
+            border-color: #3b82f6;
+            transform: scale(1.05);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .pricing-card h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            font-size: 48px;
+            font-weight: bold;
+            color: #3b82f6;
+            margin: 20px 0;
+        }
+
+        .price-period {
+            color: #cbd5e1;
+            font-size: 16px;
+        }
+
+        .features-list {
+            text-align: left;
+            margin: 30px 0;
+            list-style: none;
+        }
+
+        .features-list li {
+            padding: 10px 0;
+            color: #cbd5e1;
+            border-bottom: 1px solid rgba(71, 85, 105, 0.2);
+        }
+
+        .features-list li:before {
+            content: "✓ ";
+            color: #22c55e;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 80px 0;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 16px;
+            margin: 80px 0;
+        }
+
+        .testimonials h2 {
+            font-size: 44px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .testimonial {
+            background: rgba(51, 65, 85, 0.5);
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .stars {
+            color: #fbbf24;
+            margin-bottom: 10px;
+        }
+
+        /* FAQ */
+        .faq {
+            padding: 80px 0;
+        }
+
+        .faq h2 {
+            font-size: 44px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .faq-item {
+            background: rgba(51, 65, 85, 0.5);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .faq-question {
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            margin-top: 15px;
+            color: #cbd5e1;
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(15, 23, 42, 0.95);
+            border-top: 1px solid rgba(71, 85, 105, 0.3);
+            padding: 40px 0;
+            text-align: center;
+            color: #cbd5e1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            nav a {
+                margin-left: 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🔥 DropForge AI</div>
+                <nav>
+                    <a href="#features">Features</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#testimonials">Testimonials</a>
+                    <a href="#faq">FAQ</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>The Smartest Dropshipping Software</h1>
+            <p>Launch profitable dropshipping stores in minutes with AI-powered product research, real-time social proof verification, and automated supplier connections.</p>
+            <a href="#pricing" class="cta-button">Start Free Trial</a>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2>Powerful Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Product Research</h3>
+                    <p>Search 100,000+ AliExpress products with real-time data. Find winning products in seconds.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚦</div>
+                    <h3>Traffic Light System</h3>
+                    <p>Green/Amber/Red validation. Know exactly which products to build stores for.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Social Proof Engine</h3>
+                    <p>Verify products across Facebook, TikTok, Amazon & Google Trends in real-time.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⏰</div>
+                    <h3>Timing Score</h3>
+                    <p>Know if products are rising, flat, or declining. Never miss a trend again.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3>Price Elasticity</h3>
+                    <p>AI-powered pricing recommendations. Maximize profits with optimal pricing.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏪</div>
+                    <h3>One-Click Store Builder</h3>
+                    <p>Create professional Shopify stores automatically. No coding required.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2>Simple, Transparent Pricing</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Basic</h3>
+                    <div class="price">$29<span class="price-period">/month</span></div>
+                    <p>Perfect for getting started</p>
+                    <ul class="features-list">
+                        <li>100 searches/month</li>
+                        <li>Traffic light system</li>
+                        <li>Profit calculator</li>
+                        <li>Basic store builder</li>
+                        <li>Email support</li>
+                    </ul>
+                    <a href="#" class="cta-button">Get Started</a>
+                </div>
+
+                <div class="pricing-card featured">
+                    <h3>Pro</h3>
+                    <div class="price">$79<span class="price-period">/month</span></div>
+                    <p>For serious entrepreneurs</p>
+                    <ul class="features-list">
+                        <li>Unlimited searches</li>
+                        <li>Social proof engine</li>
+                        <li>Timing score</li>
+                        <li>Price elasticity</li>
+                        <li>Creative swipes</li>
+                        <li>Supplier chat bot</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <a href="#" class="cta-button">Start Free Trial</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Premium</h3>
+                    <div class="price">$199<span class="price-period">/month</span></div>
+                    <p>Enterprise solution</p>
+                    <ul class="features-list">
+                        <li>Everything in Pro</li>
+                        <li>Competitor analysis</li>
+                        <li>Email sequences</li>
+                        <li>Advanced analytics</li>
+                        <li>API access</li>
+                        <li>White label</li>
+                        <li>24/7 support</li>
+                    </ul>
+                    <a href="#" class="cta-button">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <h2>Loved by Entrepreneurs</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial">
+                    <div class="stars">★★★★★</div>
+                    <p>"DropForge AI changed my business. I went from 0 to $5K/month in 60 days. This is the real deal."</p>
+                    <div class="testimonial-author">- Sarah M., Store Owner</div>
+                </div>
+                <div class="testimonial">
+                    <div class="stars">★★★★★</div>
+                    <p>"The social proof verification is insane. I know exactly which products will sell before I build stores."</p>
+                    <div class="testimonial-author">- John D., Entrepreneur</div>
+                </div>
+                <div class="testimonial">
+                    <div class="stars">★★★★★</div>
+                    <p>"Best investment I've made. The timing score alone has saved me thousands in failed products."</p>
+                    <div class="testimonial-author">- Emily R., E-commerce Manager</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How long does it take to launch a store?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    With DropForge AI, you can launch a profitable store in under 15 minutes. Search for products, verify with social proof, and create your store with one click.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Do I need any technical skills?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    No! DropForge AI is completely beginner-friendly. No coding, no design skills needed. Everything is automated and intuitive.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Can I cancel anytime?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    Yes, cancel anytime with no questions asked. We're confident you'll love DropForge AI, but we never want to lock you in.
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What about supplier connections?</span>
+                    <span>+</span>
+                </div>
+                <div class="faq-answer">
+                    DropForge AI connects you directly with verified Alibaba suppliers. Our AI chat bot helps you negotiate the best prices automatically.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 DropForge AI. All rights reserved. | The smartest dropshipping software on the market.</p>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                question.parentElement.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
